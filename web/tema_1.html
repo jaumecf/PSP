@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tema 1: Programació Multiprocés - PSP</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+
+    <style>
+        :root {
+            --primary-color: #0f172a;
+            --accent-color: #2563eb;
+            --accent-light: #eff6ff;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --alert-red: #ef4444;
+            --alert-bg: #fef2f2;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: var(--text-dark);
+        }
+
+        /* Top Bar de navegació */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            z-index: 100;
+            box-sizing: border-box;
+        }
+
+        .top-bar a {
+            text-decoration: none;
+            color: var(--accent-color);
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .top-bar .title-tag {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Ajustos globals de Reveal */
+        .reveal {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Forçar layout vertical consistent i padding superior per no xocar amb la top-bar */
+        .reveal .slides > section {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: flex-start !important;
+            align-items: stretch !important;
+            height: 100% !important;
+            padding-top: 18px !important; /* Espai extra a sobre de la diapositiva */
+            box-sizing: border-box !important;
+        }
+
+        /* Per a la portada (centrat vertical) */
+        .reveal .slides > section.title-slide {
+            justify-content: center !important;
+            align-items: center !important;
+            text-align: center !important;
+            padding-top: 0 !important;
+        }
+
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+            font-family: 'Inter', sans-serif;
+            color: var(--primary-color);
+            font-weight: 700;
+            text-transform: none;
+            letter-spacing: -0.02em;
+        }
+
+        /* Títol fixat amb espai superior addicional */
+        .reveal .slides > section h3 {
+            position: sticky;
+            top: 0;
+            background-color: #ffffff;
+            z-index: 10;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 6px;
+            margin-top: 10px; /* Margi superior per evitar talls */
+            margin-bottom: 16px;
+            text-align: left;
+            font-size: 1.3em;
+            width: 100%;
+        }
+
+        .reveal p, .reveal li {
+            color: var(--text-dark);
+            font-size: 0.75em;
+            line-height: 1.45;
+        }
+
+        .reveal ul, .reveal ol {
+            margin-left: 1.2rem;
+            text-align: left;
+            margin-bottom: 10px;
+        }
+
+        .reveal li {
+            margin-bottom: 6px;
+        }
+
+        /* Caixes d'exemples i avisos */
+        .highlight-box {
+            background-color: var(--accent-light);
+            border-left: 4px solid var(--accent-color);
+            padding: 10px 14px;
+            margin-top: 10px;
+            border-radius: 6px;
+            text-align: left;
+            font-size: 0.7em;
+            line-height: 1.4;
+        }
+
+        .alert-box {
+            background-color: var(--alert-bg);
+            border-left: 4px solid var(--alert-red);
+            padding: 10px 14px;
+            margin-top: 10px;
+            border-radius: 6px;
+            text-align: left;
+            color: #991b1b;
+            font-size: 0.7em;
+            line-height: 1.4;
+        }
+
+        /* Badges */
+        .badge {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.7em;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Codi */
+        .reveal pre {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border-radius: 8px;
+            width: 100%;
+            border: 1px solid var(--border-color);
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .reveal code {
+            font-family: 'Fira Code', monospace;
+            max-height: 320px;
+            font-size: 0.7em;
+            line-height: 1.35;
+        }
+
+        /* Taules */
+        table {
+            font-size: 0.65em !important;
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: #ffffff !important;
+            padding: 8px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <a href="index.html">&larr; Tornar a l'Índex</a>
+    <span class="title-tag">PSP - Tema 1: Programació Multiprocés</span>
+</div>
+
+<div class="reveal">
+    <div class="slides">
+
+        <!-- Diapositiva 1: Portada -->
+        <section class="title-slide">
+            <span class="badge">PSP</span>
+            <h2 style="margin-top: 15px;">Tema 1: Programació Multiprocés</h2>
+            <p><small>Programació de Serveis i Processos | Cicle Formatiu DAM</small></p>
+        </section>
+
+        <!-- Diapositiva 2: Conceptes Bàsics I -->
+        <section>
+            <h3>1. Conceptes Bàsics (I)</h3>
+            <ul>
+                <li><strong>Programa:</strong> Element <em>estàtic</em>. Conjunt d'instruccions en un llenguatge de programació que defineixen la lògica.</li>
+                <li><strong>Executable:</strong> Fitxer emmagatzemat en disc amb la informació necessària per crear un procés al SO.</li>
+                <li><strong>Procés:</strong> Element <em>dinàmic</em>. Instància d'un programa en execució amb recursos assignats (memòria, PC, registres, pila).</li>
+            </ul>
+            <div class="highlight-box">
+                <strong>Exemple:</strong> En obrir tres vegades l'executable de Google Chrome es generen 3 processos independents, cadascun amb el seu propi espai de memòria protegit.
+            </div>
+        </section>
+
+        <!-- Diapositiva 3: Conceptes Bàsics II -->
+        <section>
+            <h3>1. Conceptes Bàsics (II)</h3>
+            <p style="text-align:left; font-weight:600; margin-bottom:8px;">Bloc de Control de Procés (PCB) i Aïllament</p>
+            <ul>
+                <li><strong>PCB (Process Control Block):</strong> Estructura del SO que manté les dades d'execució d'un procés:
+                    <ul>
+                        <li><code>PID</code> (Process ID), estat, comptador de programa, registres, prioritat i fitxers/E-S oberts.</li>
+                    </ul>
+                </li>
+                <li><strong>Aïllament de Memòria:</strong> Un procés <u>no pot escriure ni llegir</u> directament en la memòria assignada a un altre procés.</li>
+            </ul>
+        </section>
+
+        <!-- Diapositiva 4: SO i Arbre de Processos -->
+        <section>
+            <h3>2. El SO i la Gestió de Processos</h3>
+            <ul>
+                <li><strong>Relació Pare-Fill:</strong> Quan un procés sol·licita la creació d'un nou procés, es forma una jerarquia anomenada <strong>Arbre de Processos</strong>.</li>
+                <li><strong>Tipologia segons interfície:</strong>
+                    <ul>
+                        <li><strong>Primer Pla (Foreground):</strong> Interaccionen directament amb l'usuari.</li>
+                        <li><strong>Segon Pla (Background) / Dimonis (Daemons):</strong> S'executen de forma transparent sense interfície d'usuari (ex: servidor MySQL, HTTP).</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Diapositiva 5: Cicle de Vida d'un Procés -->
+        <section>
+            <h3>3. Cicle de Vida d'un Procés</h3>
+            <p style="text-align:left;"><small>Diagrama d'Estats de Transició</small></p>
+            <div style="background:#f8fafc; border: 1px solid var(--border-color); padding:10px; border-radius:8px; font-size:0.7em; text-align:center; margin-bottom: 10px;">
+                <span class="badge" style="background:#e2e8f0; color:#334155;">Nou</span> &rarr; 
+                <span class="badge" style="background:#fef3c7; color:#92400e;">Llest (Ready)</span> &rightleftarrows; 
+                <span class="badge" style="background:#dcfce7; color:#166534;">En Execució (Running)</span> &rarr; 
+                <span class="badge" style="background:#fee2e2; color:#991b1b;">Finalitzat</span>
+                <br><br>
+                &uarr; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &darr;
+                <br>
+                <span class="badge" style="background:#e0f2fe; color:#075985;">Bloquejat (Waiting / I/O)</span> &larr;&larr;&larr;&larr;&larr;&larr;&larr;
+            </div>
+            <ul>
+                <li><strong>Llest:</strong> Esperant que la CPU li assigni temps d'execució.</li>
+                <li><strong>Bloquejat:</strong> Esperant un esdeveniment d'E/S o la finalització d'una tasca externa.</li>
+            </ul>
+        </section>
+
+        <!-- Diapositiva 6: Concurrència vs Paral·lelisme -->
+        <section>
+            <h3>4. Concurrència vs. Paral·lelisme</h3>
+            <ul>
+                <li><strong>Programació Concurrent:</strong> Execució de múltiples tasques intercalant temps de processador (<em>multiprogramació</em> en sistemes monoprocessador).</li>
+                <li><strong>Programació Paral·lela:</strong> Execució <u>simultània real</u> de múltiples instruccions en diferents nuclis o processadors (<em>multicore</em>).</li>
+            </ul>
+        </section>
+
+        <!-- Diapositiva 7: Arquitectures Multiprocessador -->
+        <section>
+            <h3>5. Arquitectures Multiprocessador</h3>
+            <ul>
+                <li><strong>Fortament Acoblats:</strong> Processadors que comparteixen la mateixa memòria principal a través d'un bus comú (SMP - Multiprocessament Simètric).</li>
+                <li><strong>Dèbilment Acoblats (Distribuïts):</strong> Cada dispositiu té la seva pròpia memòria. La comunicació es fa mitjançant l'enviament de missatges per xarxa.</li>
+            </ul>
+        </section>
+
+        <!-- Diapositiva 8: Processos vs Fils -->
+        <section>
+            <h3>6. Processos vs. Fils (Threads)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Característica</th>
+                        <th>Procés (Pesat)</th>
+                        <th>Fil / Thread (Lleuger)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Memòria</strong></td>
+                        <td>Espai d'adreçament independent</td>
+                        <td>Compartida entre fils del mateix procés</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cost de Creació</strong></td>
+                        <td>Elevat (overhead al SO)</td>
+                        <td>Molt baix</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Canvi de Context</strong></td>
+                        <td>Lent</td>
+                        <td>Molt ràpid</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Comunicació</strong></td>
+                        <td>Requereix Pipes, Sockets, I/O</td>
+                        <td>Directa (variables compartides)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Diapositiva 9: Canals d'E/S Estàndard -->
+        <section>
+            <h3>7. Canals d'E/S Estàndard del SO</h3>
+            <p style="text-align:left;">Tot procés creat pel sistema operatiu té 3 canals per defecte:</p>
+            <ul>
+                <li><strong>Entrada Estàndard (<code>stdin</code> - FD 0):</strong> D'on el procés llegeix dades (ex: teclat).</li>
+                <li><strong>Sortida Estàndard (<code>stdout</code> - FD 1):</strong> On el procés escriu els seus resultats (ex: pantalla).</li>
+                <li><strong>Sortida d'Errors (<code>stderr</code> - FD 2):</strong> On el procés escriu els missatges d'error.</li>
+            </ul>
+        </section>
+
+        <!-- Diapositiva 10: La Perspectiva de Java -->
+        <section>
+            <h3>8. Redirecció de Fluxos en Java</h3>
+            <div class="alert-box">
+                <strong>Punt clau:</strong> Els mètodes de la classe <code>Process</code> estan dissenyats des de la perspectiva del programa Pare.
+            </div>
+            <pre><code class="language-java">Process p = processBuilder.start();
+
+// Enviar dades CAP AL procés fill (connecta a la stdin del fill)
+OutputStream out = p.getOutputStream(); 
+
+// Llegir la sortida QUE PRODUEIX el procés fill (connecta a la stdout del fill)
+InputStream in = p.getInputStream(); 
+
+// Capturar els errors generats pel fill (connecta a la stderr del fill)
+InputStream err = p.getErrorStream();</code></pre>
+        </section>
+
+        <!-- Diapositiva 11: Canonades i Buffer Deadlock -->
+        <section>
+            <h3>9. Canonades i Risc de Deadlock</h3>
+            <ul>
+                <li>La comunicació pare-fill es fa mitjançant <strong>buffers de memòria intermèdia</strong> administrats pel SO.</li>
+            </ul>
+            <div class="alert-box">
+                <strong>El problema del Buffer Deadlock:</strong> Si el fill genera moltes dades per <code>stdout</code> i el pare no les llegeix immediatament, el buffer s'omple i el fill es bloqueja. Si el pare crida a <code>p.waitFor()</code> abans de llegir el flux, tots dos es bloquejaran indefinidament!
+            </div>
+        </section>
+
+        <!-- Diapositiva 12: Bones Pràctiques de Fluxos en Java -->
+        <section>
+            <h3>10. Bones Pràctiques en la Gestió d'E/S</h3>
+            <ol>
+                <li><strong>Unificació de fluxos:</strong>
+                    <pre><code class="language-java">pb.redirectErrorStream(true); // Fusiona stderr amb stdout</code></pre>
+                </li>
+                <li><strong>Redirecció directa al SO:</strong>
+                    <pre><code class="language-java">pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);</code></pre>
+                </li>
+                <li><strong>Flushing i Tancament:</strong>
+                    <p><small>Fer sempre <code>out.flush()</code> i <code>out.close()</code> en enviar dades al fill per indicar el senyal de fi de fitxer (EOF).</small></p>
+                </li>
+            </ol>
+        </section>
+
+        <!-- Diapositiva 13: Sincronització i Exit Code -->
+        <section>
+            <h3>11. Sincronització i Control d'Execució</h3>
+            <ul>
+                <li><code>waitFor()</code>: Bloqueja el fil del procés pare fins que el procés fill ha finalitzat.</li>
+                <li><code>waitFor(long timeout, TimeUnit unit)</code>: Evita bloquejos infinits.</li>
+                <li><strong>Interpretació del codi de sortida (Exit Value):</strong>
+                    <ul>
+                        <li><strong style="color:#16a34a;">0:</strong> Execució correcta.</li>
+                        <li><strong style="color:#dc2626;">&ne; 0:</strong> Error durant l'execució del procés fill.</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Diapositiva 14: Disseny de Sistemes Multiprocés -->
+        <section>
+            <h3>12. Disseny d'Aplicacions Cooperatives</h3>
+            <ol>
+                <li><strong>Descomposició Funcional:</strong> Dividir el problema global en tasques independents.</li>
+                <li><strong>Partició:</strong> Assignar tasques a diferents processos executables.</li>
+                <li><strong>Minimització d'IPC:</strong> Reduir el volum d'informació intercanviada pel cost de sincronització.</li>
+                <li><strong>Implementació:</strong> Orquestració amb <code>ProcessBuilder</code> en Java.</li>
+            </ol>
+        </section>
+
+        <!-- Diapositiva 15: Resum de l'API de Java -->
+        <section>
+            <h3>13. Resum de l'API de Java (`java.lang`)</h3>
+            <ul>
+                <li><strong><code>ProcessBuilder</code>:</strong> Configura i inicia el procés (ordre, directori de treball, entorn, redireccions d'E/S).</li>
+                <li><strong><code>Process</code>:</strong> Instància del procés en execució creat per <code>ProcessBuilder.start()</code>.
+                    <ul>
+                        <li>Gestió: <code>waitFor()</code>, <code>destroy()</code>, <code>exitValue()</code></li>
+                        <li>Comunicació: <code>getInputStream()</code>, <code>getOutputStream()</code>, <code>getErrorStream()</code></li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/java.min.js"></script>
+<script>
+    Reveal.initialize({
+        width: 1050,
+        height: 700,
+        margin: 0.06,
+        minScale: 0.2,
+        maxScale: 2.0,
+        hash: true,
+        slideNumber: 'c/t',
+        transition: 'fade'
+    });
+    hljs.highlightAll();
+</script>
+
+</body>
+</html>
