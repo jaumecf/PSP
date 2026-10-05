@@ -4,19 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contingut Teòric - PSP</title>
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&family=Cascadia+Code&family=Fira+Code&display=swap" rel="stylesheet">
+
     <style>
         :root {
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --primary-color: #0f172a;
-            --accent-color: #2563eb;
-            --accent-hover: #1d4ed8;
-            --text-color: #334155;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
+            --primary-color: #02569B;   /* Blau fosc per a capçaleres h1, h2 i taules */
+            --secondary-color: #0175C2; /* Blau mitjà per a h3, enllaços i subratllats */
+            --accent-color: #13B9FD;    /* Blau brillant per a línies d'accent i detalls */
+            --bg-color: #F8F9FA;        /* Fons de la pàgina (Gris molt suau) */
+            --card-bg: #FFFFFF;         /* Fons del contenidor principal (Blanc) */
+            --text-color: #202124;      /* Text principal (Gris gairebé negre) */
+            --border-color: #E0E0E0;    /* Marge per a taules i seccions */
         }
 
         * {
@@ -26,161 +28,170 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.6;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            padding: 20px;
         }
 
-        header {
-            background-color: var(--primary-color);
-            color: #ffffff;
-            padding: 2.5rem 1.5rem;
-            text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        header h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: -0.025em;
-        }
-
-        header p {
-            color: #94a3b8;
-            font-size: 1rem;
-            margin-top: 0.5rem;
-        }
-
-        main {
+        .container {
             max-width: 1000px;
-            margin: 3rem auto;
-            padding: 0 1.5rem;
-            flex: 1;
+            margin: 0 auto;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            padding: 40px;
+            border: 1px solid var(--border-color);
         }
 
-        .welcome-section {
-            margin-bottom: 2.5rem;
-        }
-
-        .welcome-section h2 {
-            font-size: 1.5rem;
+        /* Headings */
+        h1 {
             color: var(--primary-color);
-            margin-bottom: 0.5rem;
+            font-size: 2.2rem;
+            font-weight: 700;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 25px;
         }
 
+        h2 {
+            color: #FFFFFF;
+            background-color: var(--primary-color);
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        /* Grid i Targetes de Temes */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
         }
 
         .card {
-            background-color: var(--card-bg);
+            background-color: #FFFFFF;
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.75rem;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border-radius: 8px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.08);
         }
 
         .card-badge {
             display: inline-block;
-            background-color: #eff6ff;
-            color: var(--accent-color);
-            font-size: 0.75rem;
-            font-weight: 600;
-            padding: 0.25rem 0.6rem;
-            border-radius: 6px;
-            margin-bottom: 0.75rem;
+            background-color: #E3F2FD;
+            color: var(--secondary-color);
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-bottom: 10px;
             align-self: flex-start;
         }
 
         .card h3 {
-            font-size: 1.25rem;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            border-bottom: none;
+            padding-bottom: 0;
         }
 
         .card p {
-            color: var(--text-muted);
-            font-size: 0.925rem;
-            margin-bottom: 1.5rem;
+            color: #5F6368;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
         }
 
         .card-link {
             text-decoration: none;
-            color: #ffffff;
-            background-color: var(--accent-color);
-            padding: 0.6rem 1.2rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
+            color: #FFFFFF;
+            background-color: var(--secondary-color);
+            padding: 8px 16px;
+            border-radius: 6px;
             font-weight: 600;
             text-align: center;
             transition: background-color 0.2s ease;
         }
 
         .card-link:hover {
-            background-color: var(--accent-hover);
+            background-color: var(--primary-color);
+        }
+
+        /* Caixes d'Informació */
+        .info-box {
+            background-color: #E3F2FD;
+            border-left: 5px solid #0175C2;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            font-size: 0.95rem;
         }
 
         footer {
-            text-align: center;
-            padding: 2rem 1.5rem;
-            background-color: #ffffff;
+            margin-top: 40px;
+            padding-top: 20px;
             border-top: 1px solid var(--border-color);
-            color: var(--text-muted);
-            font-size: 0.875rem;
+            text-align: center;
+            color: #70757A;
+            font-size: 0.88rem;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Mòdul de Teoria - PSP</h1>
-        <p>Programació de Serveis i Processos | DAM</p>
-    </header>
+<div class="container">
+    <h1>Mòdul de Teoria - PSP</h1>
+    <p>Programació de Serveis i Processos | Cicle Formatiu DAM</p>
 
-    <main>
-        <section class="welcome-section">
-            <h2>Temari del Curs</h2>
-            <p>Selecciona una unitat formativa per accedir a les diapositives de teoria.</p>
-        </section>
+    <div class="info-box">
+        <strong>Benvingut/da al repositori teòric de PSP.</strong> Selecciona qualsevol de les unitats formatives per accedir al contingut detallat del temari, conceptes clau i exemples de codi en Java.
+    </div>
 
-        <div class="grid">
-            <article class="card">
-                <div>
-                    <span class="card-badge">Unitat 1</span>
-                    <h3>Tema 1: Programació Multiprocés</h3>
-                    <p>Conceptes bàsics de processos, gestió del SO, cicle de vida, concurrència i gestió d'E/S en Java.</p>
-                </div>
-                <a href="tema_1.html" class="card-link">Veure Diapositives &rarr;</a>
-            </article>
+    <h2>Temari del Curs</h2>
 
-            <article class="card">
-                <div>
-                    <span class="card-badge">Unitat 2</span>
-                    <h3>Tema 2: Conceptes Avançats</h3>
-                    <p>Programació multithread, sincronització de fils i gestió de recursos compartits.</p>
-                </div>
-                <a href="tema_2.html" class="card-link">Veure Diapositives &rarr;</a>
-            </article>
-        </div>
-    </main>
+    <div class="grid">
+        <article class="card">
+            <div>
+                <span class="card-badge">Unitat 1</span>
+                <h3>Tema 1: Programació Multiprocés</h3>
+                <p>Conceptes bàsics de processos, gestió del SO, cicle de vida, concurrència, paral·lelisme i gestió de fluxos d'E/S en Java.</p>
+            </div>
+            <a href="tema_1.html" class="card-link">Veure Tema Completa &rarr;</a>
+        </article>
+
+        <article class="card">
+            <div>
+                <span class="card-badge">Unitat 2</span>
+                <h3>Tema 2: Programació Multifil</h3>
+                <p>Programació multithread en Java, sincronització de fils, monitors, seccions crítiques i gestió de recursos compartits.</p>
+            </div>
+            <a href="tema_2.html" class="card-link">Veure Tema Completa &rarr;</a>
+        </article>
+    </div>
 
     <footer>
-        <p>&copy; 2026 - Tots els drets reservats</p>
+        <p>&copy; Programació de Serveis i Processos (PSP) - Tots els drets reservats</p>
     </footer>
+</div>
 
 </body>
 </html>
