@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tema 2: Programació Multifil - PSP</title>
+    
+    <!-- Highlight.js amb el tema VS Code Dark Plus (vs2015) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <style>
+        :root {
+            --primary-color: #02569B;
+            --secondary-color: #0175C2;
+            --accent-color: #13B9FD;
+            --bg-color: #F8F9FA;
+            --card-bg: #FFFFFF;
+            --text-color: #202124;
+            --border-color: #E0E0E0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .nav-back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .nav-back:hover { text-decoration: underline; }
+
+        h1 { color: var(--primary-color); border-bottom: 3px solid var(--accent-color); padding-bottom: 10px; }
+        h2 { 
+            color: white; 
+            background-color: var(--primary-color); 
+            padding: 10px 15px; 
+            border-radius: 6px; 
+            margin-top: 40px; 
+        }
+        h3 { color: var(--secondary-color); margin-top: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
+
+        ul, ol { margin-bottom: 20px; }
+        li { margin-bottom: 8px; }
+
+        .info-box {
+            background-color: #E3F2FD;
+            border-left: 5px solid var(--secondary-color);
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+
+        .warning-box {
+            background-color: #FFF3E0;
+            border-left: 5px solid #E65100;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+
+        .challenge-box {
+            background-color: #E8F5E9;
+            border-left: 5px solid #2E7D32;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 25px 0;
+        }
+
+        .challenge-box h3 {
+            color: #1B5E20;
+            margin-top: 0;
+            border-bottom: 2px solid #A5D6A7;
+        }
+
+        pre {
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            margin: 20px 0;
+        }
+
+        code {
+            font-family: 'Cascadia Code', 'Fira Code', Consolas, Monaco, 'Courier New', monospace;
+            font-size: 0.95rem;
+        }
+
+        p code, li code {
+            background-color: #F1F3F4;
+            color: #C7254E;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #F5F5F5;
+            color: var(--primary-color);
+        }
+
+        details {
+            background-color: #F8F9FA;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        summary {
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        summary:hover { text-decoration: underline; }
+
+        details[open] summary {
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="index.html" class="nav-back">&larr; Tornar a l'índex general</a>
+    
+    <h1>Tema 2: Programació Multifil</h1>
+    <p><em>Mòdul: Programació de Serveis i Processos (PSP)</em></p>
+
+    <!-- ==========================================
+         BLOC 1: CONCEPTES I CICLE DE VIDA DELS FILS
+         ========================================== -->
+    <section>
+        <h2>Bloc 1: Conceptes i Cicle de Vida dels Fils</h2>
+        
+        <h3>1.1. Fils (Threads): Què són?</h3>
+        <p>
+            La programació tradicional està dissenyada per treballar de forma seqüencial. Els fils (o <em>threads</em>) permeten executar paral·lelament o concurrentment diferents parts d'un mateix programa dins del context d'un mateix procés.
+        </p>
+        <p>
+            Un fil és la unitat de processament més petita que pot ser planificada per un sistema operatiu. Els fils són entitats <strong>lleugeres</strong> perquè tots els fils d'un mateix procés comparteixen l'espai de memòria (variables globals, descriptors de fitxers, heap), la qual cosa fa que la seva creació i canvi de context consumeixin molts menys recursos que la creació de processos independents.
+        </p>
+
+        <h3>1.2. Relació entre Procés i Fil</h3>
+        <ul>
+            <li><strong>Processos (Entitats pesades):</strong> No comparteixen memòria entre ells. Són independents i la seva comunicació (IPC) requereix mecanismes costosos del sistema operatiu.</li>
+            <li><strong>Fils (Entitats lleugeres):</strong> Comparteixen la memòria del procés pare. Si un fil modifica una dada en memòria, la resta de fils tenen accés a la nova dada de forma immediata.</li>
+            <li>Quan un procés s'inicia, es crea com a mínim un fil principal (executat pel mètode <code>main()</code> en Java). Quan el procés finalitza, tots els seus fils finalitzen.</li>
+        </ul>
+
+        <div class="info-box">
+            <strong>Arquitectura en memòria:</strong> Dins d'un procés amb diversos fils, cada fil disposa del seu propi comptador de programa (PC), registre de CPU i la seva pròpia <strong>pila d'execució (Stack)</strong>, però tots comparteixen el mateix espai de dades i codi (Heap).
+        </div>
+
+        <h3>1.3. Cicle de Vida i Estats d'un Fil en Java</h3>
+        <p>En Java, un fil passa per diferents estats gestionats pel planificador (Thread Scheduler):</p>
+        <ul>
+            <li><strong>Nou (New):</strong> El fil ha estat instanciat però encara no s'ha cridat al mètode <code>start()</code>.</li>
+            <li><strong>Executable / Preparat (Runnable):</strong> S'ha executat <code>start()</code>. El fil està a punt per ser executat pel planificador quan li assigni temps de CPU.</li>
+            <li><strong>En Execució (Running):</strong> El fil té l'ús de la CPU i executa les instruccions del mètode <code>run()</code>.</li>
+            <li><strong>Esperant / Bloquejat (Waiting / Sleeping / Blocked):</strong> El fil no està executant-se temporalment per una crida a <code>sleep()</code>, <code>wait()</code>, o en quedar-se bloquejat esperant un recurs sincronitzat.</li>
+            <li><strong>Mort (Dead / Terminated):</strong> El fil ha completat totes les instruccions de <code>run()</code> o ha finalitzat per una excepció. No pot tornar a executar-se.</li>
+        </ul>
+    </section>
+
+    <!-- ==========================================
+         BLOC 2: CREACIÓ I GESTIÓ DE FILS A JAVA
+         ========================================== -->
+    <section>
+        <h2>Bloc 2: Creació i Gestió de Fils a Java</h2>
+
+        <h3>2.1. Formes de Creació de Fils</h3>
+        <p>En Java existeixen dues formes principals per definir i executar un fil:</p>
+
+        <h4>Opció A: Heretant de la classe <code>Thread</code></h4>
+        <p>Sobreescribim el mètode <code>run()</code> per definir el codi executable del fil.</p>
+<pre><code class="language-java">package heretafil;
+
+public class HeretaFil extends Thread {
+    private String strImprimir;
+
+    public HeretaFil(String strP) {
+        this.strImprimir = strP;
+    }
+
+    @Override
+    public void run() {
+        for (int x = 0; x < 5; x++) {
+            System.out.println(strImprimir + " - passada " + x);
+        }
+    }
+
+    public static void main(String[] args) {
+        Thread primer = new HeretaFil("Fil 1");
+        Thread segon = new HeretaFil("Fil 2");
+
+        // Iniciem els fils amb start() (NO cridar directament a run())
+        primer.start();
+        segon.start();
+
+        System.out.println("Final Fil Principal");
+    }
+}</code></pre>
+
+        <h4>Opció B: Implementant la interfície <code>Runnable</code> (Recomanat)</h4>
+        <p>Com que Java no suporta l'herència múltiple, si la nostra classe ja hereta d'una altra entitat, hem d'implementar <code>Runnable</code>.</p>
+<pre><code class="language-java">package runnablefil;
+
+public class RunnableFil implements Runnable {
+    private String strImprimir;
+
+    public RunnableFil(String strP) {
+        this.strImprimir = strP;
+    }
+
+    @Override
+    public void run() {
+        for (int x = 0; x < 5; x++) {
+            System.out.println(strImprimir + " - passada " + x);
+        }
+    }
+
+    public static void main(String[] args) {
+        RunnableFil obj1 = new RunnableFil("Fil 1");
+        RunnableFil obj2 = new RunnableFil("Fil 2");
+
+        Thread primer = new Thread(obj1);
+        Thread segon = new Thread(obj2);
+
+        primer.start();
+        segon.start();
+
+        System.out.println("Final Fil Principal");
+    }
+}</code></pre>
+
+        <div class="warning-box">
+            <strong>Atenció (`start` vs `run`):</strong> Cridar directament al mètode <code>run()</code> executa el codi de forma seqüencial en el fil actual (main). Per crear un fil independent i paral·lel en el sistema operatiu cal cridar obligatòriament al mètode <code>start()</code>.
+        </div>
+
+        <h3>2.2. Sincronització de la Finalització amb <code>join()</code></h3>
+        <p>
+            El mètode no estàtic <code>join()</code> permet que un fil d'execució esperi fins que un altre fil hagi completat la seva execució (passant a l'estat <em>Dead</em>).
+        </p>
+<pre><code class="language-java">try {
+    primer.start();
+    segon.start();
+
+    // El fil principal (main) s'espera que acabin 'primer' i 'segon'
+    primer.join();
+    segon.join();
+} catch (InterruptedException e) {
+    e.printStackTrace();
+}
+
+System.out.println("Aquest missatge es mostra quan TOTS els fils han acabat.");</code></pre>
+    </section>
+
+    <!-- ==========================================
+         BLOC 3: MECANISMES DE SINCRONITZACIÓ I CONCURRÈNCIA
+         ========================================== -->
+    <section>
+        <h2>Bloc 3: Mecanismes de Sincronització i Concurrència</h2>
+
+        <h3>3.1. Seccions Crítiques</h3>
+        <p>
+            Una <strong>Secció Crítica</strong> és el fragment de codi que accedeix a un recurs compartit (variablesglobals, fitxers, bases de dades) i que no ha de ser executat concurrentment per més d'un fil al mateix temps per evitar corrupció de dades o resultats imprevisibles.
+        </p>
+
+        <h3>3.2. Riscos de la Concurrència</h3>
+        <p>
+            Quan no es gestionen adequadament les seccions crítiques i la sincronització entre fils, el sistema pot patir els següents problemes clàssics:
+        </p>
+        <ul>
+            <li>
+                <strong>Condició de Carrera (Race Condition):</strong> Es produeix quan diversos fils accedeixen simultàniament al mateix recurs compartit i almenys un en modifica l'estat. El resultat final depèn de l'ordre exactament fortuït d'execució assignat pel planificador de CPU.
+            </li>
+            <li>
+                <strong>Interbloqueig (Deadlock):</strong> Es produeix quan dos o més fils queden bloquejats indefinidament, esperant cadascun un recurs que té reservat l'altre (ex: Fil A té R1 i vol R2; Fil B té R2 i vol R1). Cap fil pot avançar.
+            </li>
+            <li>
+                <strong>Inanició (Starvation):</strong> Un fil mai no aconsegueix accés al recurs compartit perquè altres fils amb major prioritat o freqüència li treuen el torn sistemàticament.
+            </li>
+            <li>
+                <strong>Bloqueig Actiu (Livelock):</strong> Els fils canvien contínuament d'estat responent a les accions dels altres fils, però cap d'ells aconsegueix fer cap avanç real en la seva execució (similar a dues persones intentant esquivar-se en un passadís caminant contínuament cap al mateix costat).
+            </li>
+        </ul>
+
+        <h3>3.3. Exclusió Mútua Clàssica amb <code>synchronized</code></h3>
+        <p>
+            Java permet bloquejar l'accés a les seccions crítiques utilitzant el modificador o bloc <code>synchronized</code>. Quan un fil entra en una secció sincronitzada, adquireix el bloqueig (<em>lock</em> o monitor) de l'objecte de forma exclusiva (1 sol fil a la vegada).
+        </p>
+
+<pre><code class="language-java">// 1. Sincronització a nivell de mètode
+public synchronized void incrementar() {
+    compte++;
+}
+
+// 2. Sincronització a nivell de bloc (més granular i eficient)
+public void processarDades() {
+    // Codi no crític executat en paral·lel
+    
+    synchronized (this) {
+        // Secció crítica: només 1 fil a la vegada
+        compte++;
+    }
+}</code></pre>
+
+        <h3>3.4. Monitors Natius: <code>wait()</code>, <code>notify()</code> i <code>notifyAll()</code></h3>
+        <p>
+            Un <strong>monitor</strong> combina l'exclusió mútua de <code>synchronized</code> amb la coordinació basada en condicions utilitzant mètodes natius de la classe <code>Object</code>.
+        </p>
+
+        <div class="info-box">
+            <strong>Com funciona la combinació de `synchronized` i `wait()`?</strong><br>
+            Quan un fil executa <code>wait()</code>, <strong>allibera immediatament el bloqueig (*lock*) del monitor</strong> i queda pausat. Això permet que un altre fil pugui entrar al bloc `synchronized`, realitzar la seva feina i cridar a <code>notifyAll()</code> per despertar al fil esperant.
+        </div>
+
+        <ul>
+            <li><code>wait()</code>: Libera el bloqueig del monitor i posa el fil en estat d'espera fins que un altre fil el notifiqui.</li>
+            <li><code>notify()</code>: Desperta un dels fils que està esperant en la cua del monitor.</li>
+            <li><code>notifyAll()</code>: Desperta tots els fils que estan esperant en la cua del monitor.</li>
+        </ul>
+
+        <h3>3.5. Bloquejos Explícits: <code>ReentrantLock</code> i <code>Condition</code></h3>
+        <p>
+            Són l'evolució i alternativa moderna als monitors natius (<code>synchronized</code> i <code>wait()/notify()</code>). Proporcionen un control molt més granular i flexible sobre els bloquejos de la secció crítica.
+        </p>
+        <ul>
+            <li>Permeten intentar adquirir el bloqueig sense quedar-se aturat indefinidament amb <code>tryLock()</code>.</li>
+            <li>Permeten associar múltiples condicions d'espera (objectes <code>Condition</code>) a un mateix bloqueig, separant per exemple les cues d'espera de productors i consumidors.</li>
+        </ul>
+
+<pre><code class="language-java">import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Condition;
+
+public class Magatzem {
+    private final ReentrantLock lock = new ReentrantLock();
+    private final Condition noPle = lock.newCondition();
+    private final Condition noBuit = lock.newCondition();
+
+    public void guardarDada() throws InterruptedException {
+        lock.lock();
+        try {
+            // Si està ple, esperem específicament a la condició 'noPle'
+            noPle.await(); 
+            // Accés a la secció crítica...
+            noBuit.signal(); // Notifiquem únicament als qui esperen per consumir
+        } finally {
+            lock.unlock(); // Semper alliberar el lock en un bloc finally!
+        }
+    }
+}</code></pre>
+
+        <h3>3.6. Semàfors (<code>Semaphore</code>) i el Semàfor Binari / Mutex</h3>
+        <p>
+            A diferència de <code>synchronized</code> o <code>ReentrantLock</code> (que només permeten 1 sol fil a la vegada), un <strong>Semàfor</strong> manté un conjunt de permisos (<em>permits</em>) per controlar l'accés simultani a un recurs que pot acceptar fins a un nombre màxim d'execucions concurrents.
+        </p>
+        <ul>
+            <li><code>acquire()</code>: Sol·licita un permís. Si n'hi ha de lliures, decrementa el comptador i continua. Si no, es bloqueja.</li>
+            <li><code>release()</code>: Torna un permís al semàfor, incrementant el comptador i despertant un fil bloquejat.</li>
+        </ul>
+
+        <div class="info-box">
+            <strong>Concepte Clau: Semàfor Binari o Mutex</strong><br>
+            Si instanciem un semàfor amb <strong>només 1 permís</strong> (<code>new Semaphore(1)</code>), aquest funciona exactament com un bloqueig mutu exclusiu (<strong>Mutex</strong>). Només un fil pot obtenir el permís i la resta s'han d'esperar fins que es cridi a <code>release()</code>. Aquest patró és molt utilitzat per protegir recursos únics sense fer servir blocs `synchronized`.
+        </div>
+
+<pre><code class="language-java">import java.util.concurrent.Semaphore;
+
+// Semàfor comptador: permet un màxim de 3 fils simultanis
+Semaphore semaforComptador = new Semaphore(3);
+
+// Semàfor binari / Mutex: funciona com un bloqueig exclusiu (1 sol fil)
+Semaphore mutex = new Semaphore(1);
+
+try {
+    mutex.acquire(); // Demana l'únic permís disponible
+    // Secció crítica d'exclusió mútua estricta
+} finally {
+    mutex.release(); // Torna el permís indispensablement
+}</code></pre>
+
+        <h3>3.7. Variables i Classes Atòmiques</h3>
+        <p>
+            Les classes del paquet <code>java.util.concurrent.atomic</code> (ex: <code>AtomicInteger</code>, <code>AtomicBoolean</code>, <code>AtomicReference</code>) són indispensables per realitzar operacions d'increment, decrements o modificació d'una sola variable de forma atòmica a nivell d'instrucció de hardware/CPU.
+        </p>
+        <p>
+            Això evita la sobrecarrega (<em>overhead</em>) i el costós canvi de context d'un bloc <code>synchronized</code> o d'un bloqueig explícit.
+        </p>
+
+<pre><code class="language-java">import java.util.concurrent.atomic.AtomicInteger;
+
+private AtomicInteger compte = new AtomicInteger(0);
+
+public void incrementar() {
+    compte.incrementAndGet(); // Increment atòmic ultra-ràpid sense utilitzar bloquejos
+}</code></pre>
+    </section>
+
+    <!-- ==========================================
+         BLOC 4: PROBLEMES CLÀSSICS DE CONCURRÈNCIA
+         ========================================== -->
+    <section>
+        <h2>Bloc 4: Problemes ClÀssics i les seves Solucions</h2>
+        <p>
+            A la programació concurrent existeixen patrons de problemes teòrics universals. Entendre'ls és fonamental per dissenyar aplicacions robustes i lliures de bloquejos mutus.
+        </p>
+
+        <h3>4.1. Problema 1: Productor - Consumidor (Resolt amb Monitor)</h3>
+        <p>
+            Un o diversos fils (productors) generen elements i els col·loquen en un magatzem compartit de mida finita. Altres fils (consumidors) agafen elements d'aquest magatzem.
+        </p>
+
+<pre><code class="language-java">public class Buffer {
+    private final int[] dades;
+    private int cap = 0, inici = 0, contador = 0;
+
+    public Buffer(int capacitat) {
+        this.dades = new int[capacitat];
+    }
+
+    public synchronized void produir(int valor) throws InterruptedException {
+        while (contador == dades.length) {
+            wait(); // Buffer ple: el productor allibera el monitor i espera
+        }
+        dades[cap] = valor;
+        cap = (cap + 1) % dades.length;
+        contador++;
+        System.out.println("Produït: " + valor);
+        notifyAll(); // Notifica als consumidors
+    }
+
+    public synchronized int consumir() throws InterruptedException {
+        while (contador == 0) {
+            wait(); // Buffer buit: el consumidor allibera el monitor i espera
+        }
+        int valor = dades[inici];
+        inici = (inici + 1) % dades.length;
+        contador--;
+        System.out.println("Consumit: " + valor);
+        notifyAll(); // Notifica als productors
+        return valor;
+    }
+}</code></pre>
+
+        <h3>4.2. Problema 2: El Pàrquing / Gestió de Places (Resolt amb Semàfors)</h3>
+        <p>
+            Un pàrquing disposa d'un nombre determinat de places de capacitat limitada. Molts cotxes (fils) volen aparcar. Si el pàrquing està ple, els cotxes han d'esperar en una cua. Aquest problema s'adapta directament a l'ús de <code>Semaphore</code>.
+        </p>
+
+<pre><code class="language-java">import java.util.concurrent.Semaphore;
+
+public class Parquing {
+    private final Semaphore places;
+
+    public Parquing(int totalPlaces) {
+        // Inicialitzem el semàfor amb el nombre de places disponibles
+        this.places = new Semaphore(totalPlaces, true); // true = cua justa (FIFO)
+    }
+
+    public void entrar(int idCotxe) {
+        try {
+            System.out.println("Cotxe " + idCotxe + " demana entrar al pàrquing.");
+            places.acquire(); // Decrementa les places o es bloqueja si n'hi ha 0
+            System.out.println("-> Cotxe " + idCotxe + " ha APARCAT.");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public void sortir(int idCotxe) {
+        System.out.println("<- Cotxe " + idCotxe + " IEX del pàrquing.");
+        places.release(); // Incrementa les places lliures i notifica a la cua
+    }
+}</code></pre>
+
+        <h3>4.3. Problema 3: Els Filòsofs Comensals (Interbloqueig / Deadlock)</h3>
+        <p>
+            Cinc filòsofs passen la vida pensant i menjant. Per menjar necessiten dues forquilles (la de la seva esquerra i la de la seva dreta). Només hi ha 5 forquilles a la taula.
+        </p>
+        <ul>
+            <li><strong>El risc d'Interbloqueig (Deadlock):</strong> Si tots els filòsofs agafen simultàniament la forquilla de la seva esquerra, cap podrà agafar la de la dreta. Tots quedaran bloquejats esperant per sempre.</li>
+            <li><strong>La solució:</strong> Controlar l'accés a les dues forquilles de manera que només se n'agafin si ambdues estan lliures al mateix temps.</li>
+        </ul>
+
+<pre><code class="language-java">public class TaulaFilosofs {
+    private final boolean[] forquillaOcupada;
+
+    public TaulaFilosofs(int numFilosofs) {
+        this.forquillaOcupada = new boolean[numFilosofs];
+    }
+
+    public synchronized void agafarForquilles(int idFilosof) throws InterruptedException {
+        int esquerra = idFilosof;
+        int dreta = (idFilosof + 1) % forquillaOcupada.length;
+
+        // Espera fins que ambdues forquilles estiguin lliures alhora
+        while (forquillaOcupada[esquerra] || forquillaOcupada[dreta]) {
+            wait();
+        }
+
+        forquillaOcupada[esquerra] = true;
+        forquillaOcupada[dreta] = true;
+    }
+
+    public synchronized void deixarForquilles(int idFilosof) {
+        int esquerra = idFilosof;
+        int dreta = (idFilosof + 1) % forquillaOcupada.length;
+
+        forquillaOcupada[esquerra] = false;
+        forquillaOcupada[dreta] = false;
+        notifyAll(); // Notifica als filòsofs veïns
+    }
+}</code></pre>
+    </section>
+
+    <!-- ==========================================
+         BLOC 5: REPTES DE REFLEXIÓ I APRENENTATGE
+         ========================================== -->
+    <section>
+        <h2>Bloc 5: Reptes de Reflexió i Aprenentatge Graduals</h2>
+        <p>
+            Aquestes qüestions i petits reptes estan dissenyats per fer-te pensar sobre la naturalesa no determinista dels fils i experimentar amb els problemes reals de la concurrència.
+        </p>
+
+        <!-- REPTE 1: BÀSIC -->
+        <div class="challenge-box">
+            <h3>Repte 1 (Nivell Bàsic): El misteri de l'ordre d'execució</h3>
+            <p><strong>Escenari:</strong> Crees un programa que llança 10 fils. Cada fil simplement imprimeix el seu número d'identificador (de l'1 al 10) per consola. Executes el programa 5 vegades segides.</p>
+            <p><strong>Pregunta de reflexió:</strong> S'imprimeixen els números sempre en ordre de l'1 al 10? Per què passa això si els has creat en un bucle ordenat? Com ho pots solucionar si necessites que s'executin en ordre estricte?</p>
+            
+            <details>
+                <summary>Veure Explicació / Solució</summary>
+                <p>
+                    <strong>Explicació:</strong> No, l'ordre d'execució <u>mai no està garantit</u>. El planificador de fils del sistema operatiu (Thread Scheduler) assigna els temps de CPU de forma no determinista segons la càrrega del sistema.
+                </p>
+                <p>
+                    <strong>Solució:</strong> Per garantir que un fil no comenci o continue fins que l'anterior hagi acabat, cal utilitzar el mètode <code>join()</code> de cada fil abans d'iniciar el següent, o bé utilitzar mecanismes de sincronització/monitors.
+                </p>
+            </details>
+        </div>
+
+        <!-- REPTE 2: INTERMEDI -->
+        <div class="challenge-box">
+            <h3>Repte 2 (Nivell Intermedi): El comptador desquadrat (Race Condition)</h3>
+            <p><strong>Escenari:</strong> Dos fils accedeixen a una mateixa variable <code>int compte = 0;</code>. Cada fil executa un bucle 100.000 vegades fent <code>compte++;</code>. En acabar els dos fils, s'imprimeix el valor final de <code>compte</code>.</p>
+            <p><strong>Pregunta de reflexió:</strong> Per què el resultat final quasi mai és 200.000 i va canviant a cada execució? Quines 3 solucions diferents pots aplicar en Java per corregir-ho?</p>
+
+            <details>
+                <summary>Veure Explicació / Solució</summary>
+                <p>
+                    <strong>Explicació:</strong> L'operació <code>compte++</code> <strong>no és atòmica</strong>. Es descodifica en 3 instruccions de CPU: 1) Llegir valor, 2) Incrementar en 1, 3) Escriure resultat. Si un fil interromp l'altre entre la lectura i l'escriptura, es perden increments (Condició de carrera).
+                </p>
+                <p><strong>Les 3 Solucions possibles:</strong></p>
+                <ol>
+                    <li>Utilitzar un mètode o bloc <code>synchronized</code>.</li>
+                    <li>Utilitzar la classe atòmica <code>AtomicInteger</code> i el seu mètode <code>incrementAndGet()</code>.</li>
+                    <li>Utilitzar un bloqueig explícit amb <code>ReentrantLock</code>.</li>
+                </ol>
+            </details>
+        </div>
+
+        <!-- REPTE 3: AVANÇAT -->
+        <div class="challenge-box">
+            <h3>Repte 3 (Nivell Avançat): La trampa del Deadlock accidental</h3>
+            <p><strong>Escenari:</strong> Tens dos comptes bancaris (A i B) i dos fils fent transferències simultàniament. El Fil 1 transfereix diners de A cap a B. El Fil 2 transfereix diners de B cap a A. Per fer la transferència, cada fil bloqueja primer el compte d'origen i després el compte de destí.</p>
+<pre><code class="language-java">// Fil 1 (A -> B)             // Fil 2 (B -> A)
+synchronized(compteA) {       synchronized(compteB) {
+    synchronized(compteB) {       synchronized(compteA) {
+        // Transferir                 // Transferir
+    }                             }
+}                             }</code></pre>
+            <p><strong>Pregunta de reflexió:</strong> Com es pot produir un Deadlock complet en aquest codi? Com el pots modificar per evitar-ho sense canviar l'ús de <code>synchronized</code>?</p>
+
+            <details>
+                <summary>Veure Explicació / Solució</summary>
+                <p>
+                    <strong>Explicació del Deadlock:</strong> Si el Fil 1 agafa el bloqueig de <code>compteA</code> exactament al mateix temps que el Fil 2 agafa el bloqueig de <code>compteB</code>, quan el Fil 1 intenti bloquejar <code>compteB</code> es quedarà esperant al Fil 2, i quan el Fil 2 intenti bloquejar <code>compteA</code> es quedarà esperant al Fil 1. El programa quedarà congelat per sempre.
+                </p>
+                <p>
+                    <strong>Solució (Ordre global de recursos):</strong> Cal establir un <strong>ordre d'adquisició de bloquejos global i consistent</strong>. Per exemple, ordenar els comptes per la seva ID abans de bloquejar-los:
+                </p>
+<pre><code class="language-java">Compte primer = compteA.getId() < compteB.getId() ? compteA : compteB;
+Compte segon = compteA.getId() < compteB.getId() ? compteB : compteA;
+
+synchronized(primer) {
+    synchronized(segon) {
+        // Transferència segura sense possibilitat de Deadlock
+    }
+}</code></pre>
+            </details>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>
