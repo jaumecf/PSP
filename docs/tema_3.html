@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tema 3: Programació de comunicació en xarxa - PSP</title>
+    
+    <!-- Highlight.js amb el tema VS Code Dark Plus (vs2015) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <style>
+        :root {
+            --primary-color: #02569B;
+            --secondary-color: #0175C2;
+            --accent-color: #13B9FD;
+            --bg-color: #F8F9FA;
+            --card-bg: #FFFFFF;
+            --text-color: #202124;
+            --border-color: #E0E0E0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .nav-back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .nav-back:hover { text-decoration: underline; }
+
+        h1 { color: var(--primary-color); border-bottom: 3px solid var(--accent-color); padding-bottom: 10px; }
+        h2 { 
+            color: white; 
+            background-color: var(--primary-color); 
+            padding: 10px 15px; 
+            border-radius: 6px; 
+            margin-top: 40px; 
+        }
+        h3 { color: var(--secondary-color); margin-top: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
+
+        ul, ol { margin-bottom: 20px; }
+        li { margin-bottom: 8px; }
+
+        .toc {
+            background-color: #F8F9FA;
+            border-left: 5px solid var(--primary-color);
+            padding: 15px 20px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-top: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .toc h3 {
+            margin-top: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+            color: var(--primary-color);
+        }
+
+        .toc ul {
+            margin-bottom: 0;
+        }
+
+        .toc a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        .info-box {
+            background-color: #E3F2FD;
+            border-left: 5px solid var(--secondary-color);
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+
+        .warning-box {
+            background-color: #FFF3E0;
+            border-left: 5px solid #E65100;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+
+        .danger-box {
+            background-color: #FFEBEE;
+            border-left: 5px solid #C62828;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+
+        pre {
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            margin: 20px 0;
+        }
+
+        code {
+            font-family: 'Cascadia Code', 'Fira Code', Consolas, Monaco, 'Courier New', monospace;
+            font-size: 0.95rem;
+        }
+
+        p code, li code, div code {
+            background-color: #F1F3F4;
+            color: #C7254E;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #F5F5F5;
+            color: var(--primary-color);
+        }
+
+        /* TCP/IP Stack Diagram adaptat a l'estil del Tema 2 */
+        .tcpip-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 25px 0;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .layer {
+            display: grid;
+            grid-template-columns: 200px 1fr 170px;
+            align-items: center;
+            padding: 14px 18px;
+            border-radius: 6px;
+            background-color: #F8F9FA;
+            border: 1px solid var(--border-color);
+        }
+
+        .layer.highlight {
+            background-color: #E3F2FD;
+            border: 2px solid var(--secondary-color);
+            box-shadow: 0 3px 8px rgba(1, 117, 194, 0.12);
+        }
+
+        .layer-name { font-weight: bold; color: var(--primary-color); }
+        .layer-desc { font-size: 0.92rem; padding: 0 12px; }
+        .layer-proto {
+            font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+            font-size: 0.85rem;
+            background: #FFFFFF;
+            padding: 5px 8px;
+            border-radius: 4px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .layer.highlight .layer-proto {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Flow Diagram TCP adaptat */
+        .flow-grid {
+            display: grid;
+            grid-template-columns: 1fr 100px 1fr;
+            gap: 10px;
+            align-items: center;
+            background: #F8F9FA;
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .flow-box {
+            background: #FFFFFF;
+            border: 2px solid var(--secondary-color);
+            border-radius: 6px;
+            padding: 10px;
+            font-weight: 600;
+            font-size: 0.92rem;
+        }
+
+        .flow-header {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.05rem;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .arrow {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 750px) {
+            .layer { grid-template-columns: 1fr; gap: 6px; text-align: center; }
+            .flow-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="index.html" class="nav-back">&larr; Tornar a l'índex general</a>
+    
+    <h1>Tema 3: Programació de comunicació en xarxa</h1>
+    <p><em>Mòdul: Programació de Serveis i Processos (PSP)</em></p>
+
+    <div class="toc">
+        <h3>Continguts del Tema</h3>
+        <ul>
+            <li><a href="#sec1">Bloc 1: La Pila de Protocols TCP/IP i la Capa de Transport</a></li>
+            <li><a href="#sec2">Bloc 2: Fonaments dels Sockets, Adreces IP i Ports</a></li>
+            <li><a href="#sec3">Bloc 3: Sockets TCP en Java (Orientats a Connexió)</a></li>
+            <li><a href="#sec4">Bloc 4: Sockets UDP en Java (Sense Connexió)</a></li>
+            <li><a href="#sec5">Bloc 5: Servidors Concurrents (Multifil) i Protocols d'Aplicació</a></li>
+            <li><a href="#sec6">Bloc 6: Errors Habituals i Bones Pràctiques</a></li>
+        </ul>
+    </div>
+
+    <!-- ==========================================
+         BLOC 1: LA PILA DE PROTOCOLS TCP/IP
+         ========================================== -->
+    <section id="sec1">
+        <h2>Bloc 1: La Pila de Protocols TCP/IP i la Capa de Transport</h2>
+        <p>
+            Quan dues aplicacions situades en ordinadors diferents volen intercanviar informació, les dades han de travessar una estructura organitzada en capes coneguda com la <strong>pila de protocols TCP/IP</strong>. Cada capa afegeix la seva pròpia capçalera de control (encapsulació) i resol un problema específic de la comunicació.
+        </p>
+
+        <div class="tcpip-stack">
+            <div class="layer">
+                <div class="layer-name">4. Capa d'Aplicació</div>
+                <div class="layer-desc">On viuen els nostres programes Java i els protocols d'alt nivell que definim per intercanviar missatges.</div>
+                <div class="layer-proto">HTTP, FTP, SMTP, Propi</div>
+            </div>
+            <div class="layer highlight">
+                <div class="layer-name">3. Capa de Transport ★</div>
+                <div class="layer-desc"><strong>El nucli d'aquest tema.</strong> Connecta processos (aplicacions) mitjançant <strong>ports</strong> i decideix com viatgen les dades (fiabilitat vs. velocitat).</div>
+                <div class="layer-proto">TCP / UDP (Sockets)</div>
+            </div>
+            <div class="layer">
+                <div class="layer-name">2. Capa d'Internet (Xarxa)</div>
+                <div class="layer-desc">S'encarrega d'encaminar els paquets des de la màquina origen fins a la màquina destí a través de routers.</div>
+                <div class="layer-proto">IP (IPv4 / IPv6), ICMP</div>
+            </div>
+            <div class="layer">
+                <div class="layer-name">1. Accés a la Xarxa</div>
+                <div class="layer-desc">Transmissió física dels bits pel medi (cable Ethernet, ones Wi-Fi, fibra òptica) mitjançant adreces MAC.</div>
+                <div class="layer-proto">Ethernet, Wi-Fi (802.11)</div>
+            </div>
+        </div>
+
+        <h3>1.1. Èmfasi en la Capa de Transport: TCP vs. UDP</h3>
+        <p>
+            La capa d'Internet (IP) només sap portar paquets d'un ordinador A a un ordinador B. És la <strong>Capa de Transport</strong> la que permet que múltiples aplicacions d'un mateix ordinador (el navegador, Spotify, el nostre servidor Java) es comuniquin simultàniament sense barrejar dades. Per fer-ho, ens ofereix dos grans protocols:
+        </p>
+
+        <ul>
+            <li><strong>TCP (Transmission Control Protocol):</strong> Protocol <em>orientat a connexió</em>. Abans d'enviar dades, estableix un canal virtual (<em>Three-Way Handshake</em>: SYN, SYN-ACK, ACK). Garanteix que tots els bytes arriben, sense errors i en el mateix ordre en què es van enviar. Si un paquet es perd, TCP el reenvia automàticament.</li>
+            <li><strong>UDP (User Datagram Protocol):</strong> Protocol <em>sense connexió</em>. Envia paquets independents (datagrames) directament a la xarxa sense preguntar si el receptor està preparat. No garanteix l'entrega ni l'ordre, però no té sobrecàrrega de control i és extremadament ràpid.</li>
+        </ul>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Característica</th>
+                    <th>TCP (Flux de Bytes)</th>
+                    <th>UDP (Datagrames)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Connexió</strong></td>
+                    <td>Orientat a connexió (canal establert abans de parlar).</td>
+                    <td>Sense connexió (enviament directe paquet a paquet).</td>
+                </tr>
+                <tr>
+                    <td><strong>Fiabilitat</strong></td>
+                    <td>Alta. Garanteix l'entrega mitjançant confirmacions (ACK).</td>
+                    <td>Baixa ("Best-effort"). Un paquet es pot perdre sense avís.</td>
+                </tr>
+                <tr>
+                    <td><strong>Ordre d'arribada</strong></td>
+                    <td>Garantit. El receptor reconstrueix el flux en ordre exacte.</td>
+                    <td>No garantit. Poden arribar desordenats o duplicats.</td>
+                </tr>
+                <tr>
+                    <td><strong>Velocitat i Latència</strong></td>
+                    <td>Més lent (capçaleres de 20 bytes + control de flux/congestió).</td>
+                    <td>Molt ràpid i lleuger (capçalera mínima de només 8 bytes).</td>
+                </tr>
+                <tr>
+                    <td><strong>Classes en Java</strong></td>
+                    <td><code>ServerSocket</code> i <code>Socket</code></td>
+                    <td><code>DatagramSocket</code> i <code>DatagramPacket</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Casos d'ús típics</strong></td>
+                    <td>Web (HTTP), transferència d'arxius, correu, xats, banca.</td>
+                    <td>Streaming de vídeo/àudio, jocs multijugador, DNS, VoIP.</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ==========================================
+         BLOC 2: FONAMENTS DELS SOCKETS
+         ========================================== -->
+    <section id="sec2">
+        <h2>Bloc 2: Fonaments dels Sockets, Adreces IP i Ports</h2>
+        <p>
+            Un <strong>Socket</strong> (endoll) és la interfície de programació que connecta la capa d'aplicació (el nostre codi Java) amb la capa de transport del Sistema Operatiu. Un socket queda identificat de manera única a tot el món per la combinació de:
+        </p>
+
+        <div class="info-box">
+            <strong>Identificació d'un extrem de comunicació:</strong><br>
+            <code>Socket = Adreça IP + Port + Protocol de Transport (TCP o UDP)</code>
+        </div>
+
+        <ul>
+            <li><strong>Adreça IP (<code>java.net.InetAddress</code>):</strong> Identifica el dispositiu dins la xarxa. L'adreça especial <code>127.0.0.1</code> (o <code>localhost</code>) apunta sempre a la pròpia màquina (interfície de <em>loopback</em>), ideal per provar client i servidor al mateix PC.</li>
+            <li><strong>Port (0 a 65.535):</strong> Número enter de 16 bits que identifica l'aplicació concreta dins del dispositiu:
+                <ul>
+                    <li><code>0 – 1023</code>: <strong>Ports ben coneguts</strong> (reservats pel sistema: 80 HTTP, 443 HTTPS, 22 SSH, 53 DNS).</li>
+                    <li><code>1024 – 49151</code>: <strong>Ports registrats</strong> (on solem ubicar els nostres servidors de pràctiques, ex: <code>5000</code>, <code>8080</code>).</li>
+                    <li><code>49152 – 65535</code>: <strong>Ports dinàmics o efímers</strong> (assignats automàticament pel SO als clients quan obren una connexió).</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <!-- ==========================================
+         BLOC 3: SOCKETS TCP EN JAVA
+         ========================================== -->
+    <section id="sec3">
+        <h2>Bloc 3: Sockets TCP en Java (Orientats a Connexió)</h2>
+        <p>
+            En arquitectura Client-Servidor amb TCP, els rols estan clarament diferenciats des del primer moment:
+        </p>
+
+        <div class="flow-grid">
+            <div class="flow-header">SERVIDOR (Passiu)</div>
+            <div></div>
+            <div class="flow-header">CLIENT (Actiu)</div>
+
+            <div class="flow-box">1. <code>new ServerSocket(port)</code><br><small>Reserva el port i escolta</small></div>
+            <div class="arrow"></div>
+            <div></div>
+
+            <div class="flow-box">2. <code>server.accept()</code><br><small>⚠️ Mètode bloquejant</small></div>
+            <div class="arrow">&larr; SYN &mdash;</div>
+            <div class="flow-box">1. <code>new Socket(ip, port)</code><br><small>Inicia connexió TCP</small></div>
+
+            <div class="flow-box">3. Retorna un <code>Socket</code> dedicat<br><small>Canal bidireccional obert</small></div>
+            <div class="arrow">&harr; Streams &harr;</div>
+            <div class="flow-box">2. Connexió establerta<br><small>Obté Input/Output Streams</small></div>
+
+            <div class="flow-box">4. <code>socket.close()</code></div>
+            <div class="arrow">&mdash; FIN &rarr;</div>
+            <div class="flow-box">3. <code>socket.close()</code></div>
+        </div>
+
+        <h3>3.1. Gestió de Fluxos (Streams) en TCP</h3>
+        <p>
+            Un cop connectats, tant el client com el servidor disposen d'un objecte <code>Socket</code>. Aquest objecte proporciona dos canals de bytes en cru: <code>getInputStream()</code> i <code>getOutputStream()</code>. Com que treballar amb arrays de bytes és incòmode, els embolcallem amb classes de <code>java.io</code>:
+        </p>
+        <ul>
+            <li><strong>Per enviar text línia a línia:</strong> <code>BufferedReader</code> (lectura amb <code>readLine()</code>) i <code>PrintWriter</code> (escriptura amb <code>println()</code>).</li>
+            <li><strong>Per enviar dades primitives tipificades (<code>int</code>, <code>double</code>, <code>boolean</code>, <code>UTF</code>):</strong> <code>DataInputStream</code> i <code>DataOutputStream</code>.</li>
+        </ul>
+
+        <div class="warning-box">
+            <strong>Atenció al buffer de sortida (autoFlush):</strong><br>
+            Quan creïs un <code>PrintWriter</code> sobre un socket, passa sempre <code>true</code> com a segon paràmetre: <code>new PrintWriter(socket.getOutputStream(), true)</code>. Si no ho fas, les dades es quedaran retingudes a la memòria intermèdia i el receptor es quedarà bloquejat esperant al <code>readLine()</code>.
+        </div>
+
+        <h3>3.2. Exemple 1: Servidor i Client Eco TCP (Monofil)</h3>
+
+        <h4>ServidorEcoTCP.java</h4>
+<pre><code class="language-java">import java.io.*;
+import java.net.*;
+
+public class ServidorEcoTCP {
+    public static void main(String[] args) {
+        final int PORT = 5000;
+
+        try (ServerSocket servidor = new ServerSocket(PORT)) {
+            System.out.println("Servidor TCP escoltant al port " + PORT + "...");
+
+            // accept() bloqueja l'execució fins que entra un client
+            try (Socket clientSocket = servidor.accept();
+                 BufferedReader entrada = new BufferedReader(
+                         new InputStreamReader(clientSocket.getInputStream()));
+                 PrintWriter sortida = new PrintWriter(
+                         clientSocket.getOutputStream(), true)) {
+
+                System.out.println("Client connectat des de: " + clientSocket.getInetAddress());
+
+                String missatge;
+                while ((missatge = entrada.readLine()) != null) {
+                    System.out.println("Rebut: " + missatge);
+                    if ("ADEU".equalsIgnoreCase(missatge)) {
+                        sortida.println("Connexió tancada pel servidor.");
+                        break;
+                    }
+                    sortida.println("ECO: " + missatge.toUpperCase());
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error de xarxa al servidor: " + e.getMessage());
+        }
+    }
+}</code></pre>
+
+        <h4>ClientEcoTCP.java</h4>
+<pre><code class="language-java">import java.io.*;
+import java.net.*;
+import java.util.Scanner;
+
+public class ClientEcoTCP {
+    public static void main(String[] args) {
+        final String HOST = "127.0.0.1";
+        final int PORT = 5000;
+
+        try (Socket socket = new Socket(HOST, PORT);
+             BufferedReader entrada = new BufferedReader(
+                     new InputStreamReader(socket.getInputStream()));
+             PrintWriter sortida = new PrintWriter(
+                     socket.getOutputStream(), true);
+             Scanner teclat = new Scanner(System.in)) {
+
+            System.out.println("Connectat al servidor. Escriu missatges (ADEU per sortir):");
+            String text;
+            do {
+                System.out.print("> ");
+                text = teclat.nextLine();
+                sortida.println(text); // Envia al servidor
+                String resposta = entrada.readLine(); // Espera resposta
+                System.out.println("Servidor respon: " + resposta);
+            } while (!"ADEU".equalsIgnoreCase(text));
+
+        } catch (IOException e) {
+            System.err.println("No s'ha pogut connectar al servidor: " + e.getMessage());
+        }
+    }
+}</code></pre>
+    </section>
+
+    <!-- ==========================================
+         BLOC 4: SOCKETS UDP EN JAVA
+         ========================================== -->
+    <section id="sec4">
+        <h2>Bloc 4: Sockets UDP en Java (Sense Connexió)</h2>
+        <p>
+            En UDP no existeix el concepte de client connectat ni de fluxos (<code>InputStream</code>/<code>OutputStream</code>). La comunicació funciona com el <strong>correu postal tradicional</strong>:
+        </p>
+        <ul>
+            <li><code>DatagramSocket</code>: És la bústia per on s'envien i es reben paquets.</li>
+            <li><code>DatagramPacket</code>: És el sobre. Quan enviem, hi posem les dades (<code>byte[]</code>), la longitud, l'adreça IP de destí i el port de destí. Quan rebem, preparem un sobre buit (un buffer) i el mètode <code>receive()</code> l'omple i anota al mateix sobre qui ha estat el remitent (<code>packet.getAddress()</code> i <code>packet.getPort()</code>).</li>
+        </ul>
+
+        <h3>4.1. Exemple 2: Servidor i Client de Consulta Ràpida UDP</h3>
+
+        <h4>ServidorUDP.java</h4>
+<pre><code class="language-java">import java.net.*;
+import java.time.LocalTime;
+
+public class ServidorUDP {
+    public static void main(String[] args) {
+        final int PORT = 6000;
+
+        try (DatagramSocket socket = new DatagramSocket(PORT)) {
+            System.out.println("Servidor UDP actiu al port " + PORT);
+            byte[] bufferRecepcio = new byte[1024];
+
+            while (true) {
+                // 1. Preparem el paquet buit per rebre dades
+                DatagramPacket paquetRebut = new DatagramPacket(bufferRecepcio, bufferRecepcio.length);
+                socket.receive(paquetRebut); // Bloquejant fins que arriba un datagrama
+
+                // Important: utilitzar paquetRebut.getLength() per no llegir bytes residuals!
+                String peticio = new String(paquetRebut.getData(), 0, paquetRebut.getLength());
+                System.out.println("Petició UDP de " + paquetRebut.getAddress() + ": " + peticio);
+
+                // 2. Preparem la resposta adreçada al remitent del paquet rebut
+                String textResposta = "Hora del servidor: " + LocalTime.now();
+                byte[] dadesResposta = textResposta.getBytes();
+
+                DatagramPacket paquetEnviament = new DatagramPacket(
+                        dadesResposta,
+                        dadesResposta.length,
+                        paquetRebut.getAddress(),
+                        paquetRebut.getPort()
+                );
+                socket.send(paquetEnviament);
+            }
+        } catch (Exception e) {
+            System.err.println("Error UDP: " + e.getMessage());
+        }
+    }
+}</code></pre>
+
+        <h4>ClientUDP.java</h4>
+<pre><code class="language-java">import java.net.*;
+
+public class ClientUDP {
+    public static void main(String[] args) {
+        try (DatagramSocket socket = new DatagramSocket()) {
+            // Establim un temps màxim d'espera de 3 segons (en UDP la resposta es pot perdre!)
+            socket.setSoTimeout(3000);
+
+            InetAddress ipServidor = InetAddress.getByName("127.0.0.1");
+            byte[] missatge = "HORA?".getBytes();
+
+            DatagramPacket paquetEnviament = new DatagramPacket(missatge, missatge.length, ipServidor, 6000);
+            socket.send(paquetEnviament);
+
+            byte[] bufferResposta = new byte[1024];
+            DatagramPacket paquetResposta = new DatagramPacket(bufferResposta, bufferResposta.length);
+            socket.receive(paquetResposta);
+
+            String resposta = new String(paquetResposta.getData(), 0, paquetResposta.getLength());
+            System.out.println("Resposta rebuda: " + resposta);
+
+        } catch (SocketTimeoutException e) {
+            System.err.println("Temps esgotat: el paquet UDP s'ha perdut o el servidor no respon.");
+        } catch (Exception e) {
+            System.err.println("Error al client UDP: " + e.getMessage());
+        }
+    }
+}</code></pre>
+    </section>
+
+    <!-- ==========================================
+         BLOC 5: SERVIDORS CONCURRENTS (MULTIFIL)
+         ========================================== -->
+    <section id="sec5">
+        <h2>Bloc 5: Servidors Concurrents (Multifil) i Protocols d'Aplicació</h2>
+        <p>
+            L'exemple TCP de la secció 3 té un defecte greu per a un entorn real: <strong>és seqüencial</strong>. Mentre un client estigui connectat enviant missatges, qualsevol altre client que intenti connectar-se quedarà esperant a la cua del sistema operatiu.
+        </p>
+
+        <p>
+            Per resoldre-ho, combinarem els sockets amb els coneixements del <strong>Tema 2 (Programació Multifil)</strong>:
+        </p>
+        <ol>
+            <li>El <strong>fil principal</strong> del servidor executa un bucle infinit <code>while (true)</code> la única missió del qual és acceptar noves connexions amb <code>serverSocket.accept()</code>.</li>
+            <li>Immediatament després d'acceptar un client, delega el <code>Socket</code> resultant a una tasca <code>Runnable</code> (un <em>worker</em>) executada per un <code>ExecutorService</code> (pool de fils).</li>
+            <li>Si els diferents fils clients han d'accedir o modificar un recurs comú (com una llista d'usuaris d'un xat o l'estat d'una partida), aquest recurs s'ha de protegir amb <code>synchronized</code> o estructures <em>thread-safe</em> per evitar <strong>condicions de carrera (race conditions)</strong>.</li>
+        </ol>
+
+        <h3>5.1. Exemple 3: Arquitectura de Servidor TCP Multifil amb Pool de Fils</h3>
+
+        <h4>ServidorMultifil.java + GestorClient.java</h4>
+<pre><code class="language-java">import java.io.*;
+import java.net.*;
+import java.util.concurrent.*;
+
+public class ServidorMultifil {
+    public static void main(String[] args) {
+        final int PORT = 5000;
+        // Limitem a 10 clients simultanis per protegir la memòria del servidor
+        ExecutorService pool = Executors.newFixedThreadPool(10);
+
+        try (ServerSocket servidor = new ServerSocket(PORT)) {
+            System.out.println("Servidor Multifil escoltant al port " + PORT);
+
+            while (true) {
+                Socket clientSocket = servidor.accept();
+                // Deleguem l'atenció del client a un fil del pool i tornem a escoltar
+                pool.execute(new GestorClient(clientSocket));
+            }
+        } catch (IOException e) {
+            System.err.println("Error crític al servidor: " + e.getMessage());
+        } finally {
+            pool.shutdown();
+        }
+    }
+}
+
+class GestorClient implements Runnable {
+    private final Socket socket;
+
+    public GestorClient(Socket socket) {
+        this.socket = socket;
+    }
+
+    @Override
+    public void run() {
+        String filNom = Thread.currentThread().getName();
+        try (socket;
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+
+            out.println("BENVINGUT|Atès pel fil " + filNom);
+            String linia;
+
+            // Protocol d'aplicació senzill basat en comandes separades per '|'
+            while ((linia = in.readLine()) != null) {
+                String[] parts = linia.split("\|", 2);
+                String comanda = parts[0].toUpperCase();
+
+                switch (comanda) {
+                    case "PING" -> out.println("PONG");
+                    case "ECHO" -> out.println(parts.length > 1 ? parts[1] : "ERROR|Falta text");
+                    case "EXIT" -> {
+                        out.println("BYE");
+                        return;
+                    }
+                    default -> out.println("ERROR|Comanda desconeguda");
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Client desconnectat abruptament (" + filNom + ")");
+        }
+    }
+}</code></pre>
+    </section>
+
+    <!-- ==========================================
+         BLOC 6: ERRORS HABITUALS I BONES PRÀCTIQUES
+         ========================================== -->
+    <section id="sec6">
+        <h2>Bloc 6: Errors Habituals i Bones Pràctiques</h2>
+        
+        <div class="danger-box">
+            <strong>1. Deadlock d'aplicació (Bloqueig mutu de lectura):</strong><br>
+            Si el client crida a <code>entrada.readLine()</code> esperant que el servidor li digui alguna cosa, i el servidor també està aturat a <code>entrada.readLine()</code> esperant el client, tots dos programes quedaran congelats indefinidament. <strong>Dissenya sempre un protocol clar</strong> on se sàpiga qui parla primer i quants missatges s'envien per torn.
+        </div>
+
+        <div class="danger-box">
+            <strong>2. java.net.BindException: Address already in use:</strong><br>
+            Passa quan intentes arrencar el servidor en un port (ex: <code>5000</code>) que ja està ocupat per una execució anterior que no vas aturar a l'IDE (IntelliJ/Eclipse). Atura el procés antic abans de tornar a executar.
+        </div>
+
+        <div class="warning-box">
+            <strong>3. Ús obligatori de try-with-resources:</strong><br>
+            Els sockets consumeixen descriptors de fitxer del Sistema Operatiu. Tanca sempre <code>Socket</code>, <code>ServerSocket</code> i els seus fluxos mitjançant blocs <code>try (...)</code> per evitar fuites de recursos.
+        </div>
+    </section>
+</div>
+
+</body>
+</html>
